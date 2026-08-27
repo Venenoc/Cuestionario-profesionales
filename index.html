@@ -200,6 +200,11 @@
         <span class="error-msg" id="err-profesion">Ingresá tu profesión.</span>
       </div>
       <div class="form-group">
+        <label for="especialidad">Especialidad</label>
+        <input type="text" id="especialidad" placeholder="Ej: Cardiología, Derecho Civil, Auditoría…" />
+        <span class="error-msg" id="err-especialidad">Ingresá tu especialidad.</span>
+      </div>
+      <div class="form-group">
         <label for="trabajo">Lugar de Trabajo</label>
         <input type="text" id="trabajo" placeholder="Ej: Hospital Central, Empresa XYZ…" />
         <span class="error-msg" id="err-trabajo">Ingresá tu lugar de trabajo.</span>
@@ -245,8 +250,9 @@
       const rules = [
         { id: 'nombre',    check: v => v.length >= 2,       err: 'err-nombre'    },
         { id: 'dni',       check: v => /^\d{6,9}$/.test(v), err: 'err-dni'       },
-        { id: 'profesion', check: v => v.length >= 2,       err: 'err-profesion' },
-        { id: 'trabajo',   check: v => v.length >= 2,       err: 'err-trabajo'   },
+        { id: 'profesion',   check: v => v.length >= 2,       err: 'err-profesion'   },
+        { id: 'especialidad', check: v => v.length >= 2,       err: 'err-especialidad' },
+        { id: 'trabajo',      check: v => v.length >= 2,       err: 'err-trabajo'      },
       ];
       let ok = true;
       rules.forEach(function(r) {
@@ -270,10 +276,11 @@
       errBanner.classList.remove('visible');
 
       const { error } = await db.from('respuestas').insert([{
-        nombre:    document.getElementById('nombre').value.trim(),
-        dni:       document.getElementById('dni').value.trim(),
-        profesion: document.getElementById('profesion').value.trim(),
-        trabajo:   document.getElementById('trabajo').value.trim(),
+        nombre:       document.getElementById('nombre').value.trim(),
+        dni:          document.getElementById('dni').value.trim(),
+        profesion:    document.getElementById('profesion').value.trim(),
+        especialidad: document.getElementById('especialidad').value.trim(),
+        trabajo:      document.getElementById('trabajo').value.trim(),
       }]);
 
       btn.disabled    = false;
@@ -292,7 +299,7 @@
       }
     });
 
-    ['nombre','dni','profesion','trabajo'].forEach(function(id) {
+    ['nombre','dni','profesion','especialidad','trabajo'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', function() {
         this.classList.remove('error');
         document.getElementById('err-' + id).classList.remove('visible');

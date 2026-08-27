@@ -85,7 +85,7 @@
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0cW5jem1wZWJxam5ydGJlcGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3OTQxNTAsImV4cCI6MjEwMzM3MDE1MH0.YC-IvTmTQbNKEbbYwUwuJkUm939ZM2epaOyl1qN5gJY';
 
     const db   = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const COLS = ['#', 'Nombre y Apellido', 'DNI', 'Profesión', 'Lugar de trabajo', 'Fecha'];
+    const COLS = ['#', 'Nombre y Apellido', 'DNI', 'Profesión', 'Especialidad', 'Lugar de trabajo', 'Fecha'];
     let cached = [];
 
     function esc(s) {
@@ -98,15 +98,15 @@
       const el = document.getElementById('content');
       if (!rows.length) { el.innerHTML = '<div class="empty">No hay respuestas guardadas todavía.</div>'; return; }
       const trs = rows.map(function(r, i) {
-        return '<tr><td>'+(i+1)+'</td><td>'+esc(r.nombre)+'</td><td>'+esc(r.dni)+'</td><td>'+esc(r.profesion)+'</td><td>'+esc(r.trabajo)+'</td><td>'+esc(r.created_at ? new Date(r.created_at).toLocaleString('es-AR') : '')+'</td></tr>';
+        return '<tr><td>'+(i+1)+'</td><td>'+esc(r.nombre)+'</td><td>'+esc(r.dni)+'</td><td>'+esc(r.profesion)+'</td><td>'+esc(r.especialidad)+'</td><td>'+esc(r.trabajo)+'</td><td>'+esc(r.created_at ? new Date(r.created_at).toLocaleString('es-AR') : '')+'</td></tr>';
       }).join('');
       el.innerHTML = '<div class="table-wrap"><table><thead><tr>'+COLS.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+trs+'</tbody></table></div>';
     }
 
     function toCsv(rows) {
-      const hdr = ['Nombre y Apellido','DNI','Profesion','Lugar de trabajo','Fecha'];
+      const hdr = ['Nombre y Apellido','DNI','Profesion','Especialidad','Lugar de trabajo','Fecha'];
       const lines = rows.map(function(r) {
-        return [r.nombre, r.dni, r.profesion, r.trabajo, r.created_at ? new Date(r.created_at).toLocaleString('es-AR') : '']
+        return [r.nombre, r.dni, r.profesion, r.especialidad, r.trabajo, r.created_at ? new Date(r.created_at).toLocaleString('es-AR') : '']
           .map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
       });
       return '\uFEFF' + [hdr.join(',')].concat(lines).join('\r\n');
