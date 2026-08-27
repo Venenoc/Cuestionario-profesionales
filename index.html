@@ -104,6 +104,70 @@
     }
     .admin-link:hover { color: #fff; }
     .counter { text-align: center; font-size: 0.78rem; color: #aaa; margin-top: 18px; }
+
+    .btn-report {
+      display: block;
+      margin: 28px auto 0;
+      padding: 11px 28px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .btn-report:hover { background: rgba(255,255,255,0.28); }
+
+    /* modal de contraseña */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .modal h2 { font-size: 1.1rem; color: #1a237e; margin-bottom: 8px; }
+    .modal p  { font-size: 0.85rem; color: #666; margin-bottom: 20px; }
+    .modal input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 14px;
+    }
+    .modal input:focus { border-color: #1565c0; }
+    .modal input.error { border-color: #e53935; }
+    .modal-err { font-size: 0.8rem; color: #e53935; margin-bottom: 12px; display: none; }
+    .modal-err.visible { display: block; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btns button {
+      flex: 1;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-confirm { background: #1565c0; color: #fff; }
+    .btn-cancel  { background: #eee; color: #555; }
   </style>
 </head>
 <body>
@@ -147,7 +211,21 @@
     <p class="counter" id="counter"></p>
   </div>
 
-  <a class="admin-link" href="admin.html">Ver respuestas guardadas →</a>
+  <button class="btn-report" id="btnReport">📋 Ver reporte de profesionales</button>
+
+  <!-- Modal contraseña -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2>🔒 Acceso restringido</h2>
+      <p>Ingresá la contraseña para ver el reporte.</p>
+      <input type="password" id="passInput" placeholder="Contraseña" />
+      <div class="modal-err" id="modalErr">Contraseña incorrecta.</div>
+      <div class="modal-btns">
+        <button class="btn-cancel"  id="btnCancel">Cancelar</button>
+        <button class="btn-confirm" id="btnConfirm">Ingresar</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // Pegá aquí los valores de tu proyecto Supabase (Settings → API)
@@ -222,6 +300,39 @@
     });
 
     updateCounter();
-  </script>
+
+    // lógica del modal de contraseña
+    const overlay   = document.getElementById('modalOverlay');
+    const passInput = document.getElementById('passInput');
+    const modalErr  = document.getElementById('modalErr');
+
+    document.getElementById('btnReport').addEventListener('click', function() {
+      passInput.value = '';
+      passInput.classList.remove('error');
+      modalErr.classList.remove('visible');
+      overlay.classList.add('open');
+      setTimeout(function() { passInput.focus(); }, 50);
+    });
+
+    document.getElementById('btnCancel').addEventListener('click', function() {
+      overlay.classList.remove('open');
+    });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+
+    function checkPassword() {
+      if (passInput.value === 'equipoganador2026') {
+        window.location.href = 'admin.html';
+      } else {
+        passInput.classList.add('error');
+        modalErr.classList.add('visible');
+        passInput.select();
+      }
+    }
+
+    document.getElementById('btnConfirm').addEventListener('click', checkPassword);
+    passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
 </body>
 </html>
